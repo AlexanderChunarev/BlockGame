@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import java.io.*;
-import java.util.Scanner;
+import java.util.Properties;
 
 public class Settings extends GridPane implements InitializeScene {
 
@@ -18,16 +18,18 @@ public class Settings extends GridPane implements InitializeScene {
             new Label("Left:"),
             new Label("Right:"),
             new Label("Down:")};
+    private TextField left = new TextField();
+    private TextField right = new TextField();
+    private TextField down = new TextField();
     private TextField[] textFields = new TextField[]{
-            new TextField(),
-            new TextField(),
-            new TextField()};
-
+            left,
+            right,
+            down};
 
     public Settings() {
         fillPanel();
+        loadSettings();
         listener();
-        setUserSettings();
     }
 
     @Override
@@ -59,34 +61,46 @@ public class Settings extends GridPane implements InitializeScene {
     @Override
     public void listener() {
         backToMEnu.setOnAction(event -> SceneLibrary.switchMenu());
-        for (TextField textField : textFields) {
-            textField.setOnKeyReleased(event -> {
-                String keyName = String.valueOf(event.getCode());
-                textField.setText(keyName);
-                writeUserSettings(keyName);
+        for (int i = 0; i < textFields.length; i++) {
+            int index = i;
+            textFields[i].setOnKeyReleased(event -> {
+                textFields[index].setText(String.valueOf(event.getCode()));
+                setUserSettings();
             });
         }
     }
 
     private void setUserSettings() {
         try {
-            Scanner scanner = new Scanner(new File("UserSettings.txt"));
-            for (TextField textField : textFields) {
-                textField.setText(scanner.next());
+            Properties props = new Properties();
+            File f = new File("output");
+            OutputStream out = new FileOutputStream(f);
+            for (int i = 0; i < textFields.length; i++) {
+                if (i == 0) {
+                    props.setProperty("leftKey", textFields[i].getText());
+                } else if (i == 1) {
+                    props.setProperty("rightKey", textFields[i].getText());
+                } else if (i == 2) {
+                    props.setProperty("downKey", textFields[i].getText());
+                }
             }
-        } catch (FileNotFoundException e) {
+            props.store(out, "");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void writeUserSettings(String keyName) {
-        Writer output;
+    private void loadSettings() {
+        Properties prop = new Properties();
+        InputStream input;
         try {
-            output = new BufferedWriter(new FileWriter("UserSettings.txt", true));
-            output.append(keyName + "\n");
-            output.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+            input = new FileInputStream("output");
+            prop.load(input);
+            textFields[0].setText(prop.getProperty("leftKey"));
+            textFields[1].setText(prop.getProperty("rightKey"));
+            textFields[2].setText(prop.getProperty("downKey"));
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
