@@ -18,13 +18,10 @@ public class Settings extends GridPane implements InitializeScene {
             new Label("Left:"),
             new Label("Right:"),
             new Label("Down:")};
-    private TextField left = new TextField();
-    private TextField right = new TextField();
-    private TextField down = new TextField();
     private TextField[] textFields = new TextField[]{
-            left,
-            right,
-            down};
+            new TextField(" "),
+            new TextField(" "),
+            new TextField(" ")};
 
     public Settings() {
         fillPanel();
@@ -73,18 +70,17 @@ public class Settings extends GridPane implements InitializeScene {
     private void setUserSettings() {
         try {
             Properties props = new Properties();
-            File f = new File("output");
-            OutputStream out = new FileOutputStream(f);
-            for (int i = 0; i < textFields.length; i++) {
-                if (i == 0) {
-                    props.setProperty("leftKey", textFields[i].getText());
-                } else if (i == 1) {
-                    props.setProperty("rightKey", textFields[i].getText());
-                } else if (i == 2) {
-                    props.setProperty("downKey", textFields[i].getText());
-                }
+            OutputStream out = new FileOutputStream(new File("UserSettings"));
+            if (textFields[0].getText() != null) {
+                props.setProperty("leftKey", textFields[0].getText());
             }
-            props.store(out, "");
+            if (textFields[1].getText() != null) {
+                props.setProperty("rightKey", textFields[1].getText());
+            }
+            if (textFields[2].getText() != null) {
+                props.setProperty("downKey", textFields[2].getText());
+            }
+            props.store(out, "User settings");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -94,7 +90,7 @@ public class Settings extends GridPane implements InitializeScene {
         Properties prop = new Properties();
         InputStream input;
         try {
-            input = new FileInputStream("output");
+            input = new FileInputStream("UserSettings");
             prop.load(input);
             textFields[0].setText(prop.getProperty("leftKey"));
             textFields[1].setText(prop.getProperty("rightKey"));
