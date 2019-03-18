@@ -19,9 +19,9 @@ public class Settings extends GridPane implements InitializeScene {
             new Label("Right:"),
             new Label("Down:")};
     private TextField[] textFields = new TextField[]{
-            new TextField(" "),
-            new TextField(" "),
-            new TextField(" ")};
+            new TextField(),
+            new TextField(),
+            new TextField()};
 
     public Settings() {
         fillPanel();
