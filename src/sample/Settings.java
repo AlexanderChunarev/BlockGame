@@ -27,14 +27,12 @@ public class Settings extends GridPane implements InitializeScene {
         fillPanel();
         loadSettings();
         listener();
+        System.out.println("Settings is started");
     }
 
     @Override
     public void fillPanel() {
-        setAlignment(Pos.TOP_CENTER);
-        setStyle("-fx-background-color: #383838;");
-        setVgap(20);
-        setHgap(20);
+
         setProperties();
         for (int i = 0; i < 3; i++) {
             add(labels[i], 0, i + 1);
@@ -45,6 +43,10 @@ public class Settings extends GridPane implements InitializeScene {
 
     @Override
     public void setProperties() {
+        setAlignment(Pos.TOP_CENTER);
+        setStyle("-fx-background-color: #383838;");
+        setVgap(20);
+        setHgap(20);
         for (Label label : labels) {
             label.setFont(Font.font("Verdana", 14));
             label.setTextFill(Color.WHITE);

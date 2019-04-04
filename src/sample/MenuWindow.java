@@ -29,23 +29,22 @@ public class MenuWindow extends VBox implements InitializeScene {
 
     @Override
     public void fillPanel() {
-        setAlignment(Pos.BASELINE_CENTER);
-        setStyle("-fx-background-color: #383838;");
-        setPadding(new Insets(30, 0, 30, 0));
-        setSpacing(10);
         setProperties();
-        for (Button button : buttons) {
-            getChildren().add(button);
-        }
+        getChildren().addAll(buttons);
     }
 
     @Override
     public void setProperties() {
+        setAlignment(Pos.BASELINE_CENTER);
+        setStyle("-fx-background-color: #383838;");
+        setPadding(new Insets(30, 0, 30, 0));
+        setSpacing(10);
         for (Button button : buttons) {
             button.setFont(loadFont());
             button.setTextFill(Color.LIGHTGRAY);
             button.setStyle("-fx-background-color: transparent;");
         }
+
     }
 
     @Override

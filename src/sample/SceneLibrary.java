@@ -25,6 +25,5 @@ public class SceneLibrary {
 
     public static void switchPlay() {
         currentStage.setScene(play);
-        new BlockController().controller(play);
     }
 }
