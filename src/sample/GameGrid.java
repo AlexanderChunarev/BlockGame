@@ -39,16 +39,17 @@ public class GameGrid extends BorderPane implements InitializeScene {
 
     private void createGamePanel() {
         gamePanel.setPadding(new Insets(20));
-        gamePanel.setMaxSize(270, 420);
+        gamePanel.setPrefSize(270, 420);
         gamePanel.setStyle("-fx-border-color: black");
+        gamePanel.listener(this);
         setLeft(gamePanel);
     }
 
     @Override
     public void listener() {
         back.setOnMouseClicked(event -> SceneLibrary.switchMenu());
-        play.setOnAction(event -> gamePanel.runGame());
-        pause.setOnAction(event -> gamePanel.pause());
+        play.setOnMouseClicked(event -> gamePanel.run());
+        pause.setOnMouseClicked(event -> gamePanel.pause());
     }
 
     @Override

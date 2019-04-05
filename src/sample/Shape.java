@@ -1,14 +1,15 @@
 package sample;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class Shape {
-    private int x = 3, y = 0;
-    private ArrayList<Block> figure = new ArrayList<>();
-
+    private int x = 90, y = 0;
+    private ArrayList<Rectangle> figure = new ArrayList<>();
+    private final int BLOCK_SIZE = 30;
 
     private int[][] getRandomElement(ArrayList<int[][]> list) {
         Random rand = new Random();
@@ -16,9 +17,24 @@ public class Shape {
     }
 
     void stepDown() {
-        for (Block block : figure) {
-            block.setY(block.getY() + 1);
-            y++;
+        for (Rectangle rectangle : figure) {
+            rectangle.setY(rectangle.getY() + BLOCK_SIZE);
+        }
+    }
+
+    void stepLeft() {
+        for (Rectangle rectangle : figure) {
+            if (figure.get(0).getX() - BLOCK_SIZE != 0) {
+                rectangle.setX(rectangle.getX() - BLOCK_SIZE);
+            }
+            System.out.println(rectangle.getX());
+        }
+        System.out.println();
+    }
+
+    void stepRight() {
+        for (Rectangle rectangle : figure) {
+            rectangle.setX(rectangle.getX() + BLOCK_SIZE);
         }
     }
 
@@ -27,30 +43,30 @@ public class Shape {
         for (int x = 0; x < currentTetromino.length; x++) {
             for (int y = 0; y < currentTetromino[0].length; y++) {
                 if (currentTetromino[x][y] == 1) {
-                    figure.add(new Block(y + this.x, x + this.y));
+                    figure.add(new Rectangle(this.x + 30 * y, this.y + 30 * x, 28, 28));
                 }
             }
         }
     }
 
     boolean isOnTheFloor(int[][] glass) {
-        for (Block block : figure) {
-            if (glass[block.getY() + 1][block.getX()] > 0) return true;
+        for (Rectangle rectangle : figure) {
+            if (glass[(int) rectangle.getY() / BLOCK_SIZE + 1][(int) rectangle.getX() / BLOCK_SIZE] > 0) {
+                return true;
+            }
         }
         return false;
     }
 
     void leaveOnTheFloor(int[][] glass) {
-        for (Block block : figure) {
-            System.out.println(block.getY() + "\t" + block.getX());
-            glass[block.getY()][block.getX()] = 1;
+        for (Rectangle rectangle : figure) {
+            glass[(int) rectangle.getY() / BLOCK_SIZE][(int) rectangle.getX() / BLOCK_SIZE] = 1;
         }
     }
 
-    void paintFigure(GraphicsContext graphicsContext) {
-        for (Block block : figure) {
-            block.paint(graphicsContext);
+    void paint(Pane pane) {
+        for (Rectangle rectangle : figure) {
+            pane.getChildren().add(rectangle);
         }
     }
-
 }
