@@ -24,10 +24,7 @@ public class Shape {
 
     void stepLeft() {
         for (Rectangle rectangle : figure) {
-            if (figure.get(0).getX() - BLOCK_SIZE != 0) {
-                rectangle.setX(rectangle.getX() - BLOCK_SIZE);
-            }
-            System.out.println(rectangle.getX());
+            rectangle.setX(rectangle.getX() - BLOCK_SIZE);
         }
         System.out.println();
     }
