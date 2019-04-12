@@ -1,4 +1,4 @@
-package sample;
+package sample.tetris;
 
 import java.util.*;
 
@@ -16,7 +16,7 @@ public class Tetrominos extends Shape {
     private int[][] SquareShape = {{1, 1},
             {1, 1}};
 
-    public ArrayList<int[][]> setTetrominos() {
+    ArrayList<int[][]> setTetrominos() {
         ArrayList<int[][]> arrayList = new ArrayList<>();
         arrayList.add(TShape);
         arrayList.add(JShape);
@@ -25,5 +25,12 @@ public class Tetrominos extends Shape {
         arrayList.add(ZShape);
         arrayList.add(SquareShape);
         return arrayList;
+    }
+
+
+
+    int[][] getRandomElement(ArrayList<int[][]> list) {
+        Random rand = new Random();
+        return list.get(rand.nextInt(list.size()));
     }
 }
