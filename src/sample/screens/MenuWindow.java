@@ -23,6 +23,7 @@ public class MenuWindow extends VBox implements InitializeScene {
     public MenuWindow() {
         fillPanel();
         listener();
+        setFocusTraversable(true);
     }
 
     @Override

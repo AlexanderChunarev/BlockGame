@@ -36,7 +36,11 @@ public class Shape {
     }
 
     void rotate(int[][] currentTetromino) {
-        this.x = (int) figure.get(0).getX();
+        if (currentTetromino.length == 3) {
+            this.x = (int) figure.get(0).getX() - BLOCK_SIZE;
+        } else {
+            this.x = (int) figure.get(0).getX();
+        }
         this.y = (int) figure.get(0).getY();
         figure.clear();
         initializeShape(currentTetromino);
@@ -58,7 +62,7 @@ public class Shape {
                     || glass[(int) (rectangle.getY() / BLOCK_SIZE)][(int) (rectangle.getX() / BLOCK_SIZE) - 1] == 1)) {
                 return true;
             }
-            if (keyCode.equals(KeyCode.RIGHT) && (rectangle.getX() == 240
+            if (keyCode.equals(KeyCode.RIGHT) && (rectangle.getX() == 270
                     || glass[(int) (rectangle.getY() / BLOCK_SIZE)][(int) (rectangle.getX() / BLOCK_SIZE) + 1] == 1)) {
                 return true;
             }
@@ -82,10 +86,11 @@ public class Shape {
         }
     }
 
-    void paint(Pane pane) {
+    void paint(Pane pane, Image blockImage) {
         for (Rectangle rectangle : figure) {
-            Image image = new Image("file:images/greenBlock.png");
-            rectangle.setFill(new ImagePattern(image));
+            rectangle.setFill(new ImagePattern(blockImage));
+            rectangle.setArcHeight(5);
+            rectangle.setArcWidth(5);
             pane.getChildren().add(rectangle);
         }
     }

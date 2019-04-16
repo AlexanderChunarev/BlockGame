@@ -1,49 +1,56 @@
 package sample.tetris;
 
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import sample.matrix.MatrixOperations;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
 
 public class GamePanel extends Pane {
-
+    private final int AMOUNT_OF_BLOCKS = 14;
     private Tetrominos tetromino = new Tetrominos();
     private Timeline runGame;
-    private final int AMOUNT_OF_BLOCKS = 14;
-    private int[][] glass = new int[AMOUNT_OF_BLOCKS + 1][9];
+    private int[][] currentTetromino;
+    private Image currentBlockImage;
     private ArrayList<int[][]> tetrominos = new Tetrominos().setTetrominos();
-    private int[][] currentTetromino = tetromino.getRandomElement(tetrominos);
+    private ArrayList<Image> blockImages = new Tetrominos().setBlockImages();
+    private int[][] glass = new int[AMOUNT_OF_BLOCKS + 1][10];
 
     public GamePanel() {
         setFocusTraversable(true);
         Arrays.fill(glass[AMOUNT_OF_BLOCKS], 1);
+        for (int i = 0; i < glass.length; i++) {
+            for (int j = 0; j < glass[0].length; j++) {
+                System.out.print(glass[i][j]);
+            }
+            System.out.println();
+        }
     }
 
     public void run() {
+        getRandomTetromino();
         tetromino.initializeShape(currentTetromino);
-        tetromino.paint(this);
-        runGame = new Timeline(new KeyFrame(Duration.millis(100), event -> {
+        tetromino.paint(this, currentBlockImage);
+        runGame = new Timeline(new KeyFrame(Duration.millis(200), event -> {
             if (tetromino.isTouchFloor(glass)) {
                 tetromino.leaveOnTheFloor(glass);
                 tetromino = new Tetrominos();
-                currentTetromino = tetromino.getRandomElement(tetrominos);
+                getRandomTetromino();
                 tetromino.initializeShape(currentTetromino);
-                tetromino.paint(this);
+                tetromino.paint(this, currentBlockImage);
             }
-            if (MatrixOperations.isRowFilled(glass, 9)) {
-                MatrixOperations.isFilledRow(glass, 9);
+            if (MatrixOperations.isRowFilled(glass, 10)) {
+                MatrixOperations.isFilledRow(glass, 10);
                 repaint();
                 paintComponent();
             }
-
             tetromino.stepDown();
         }));
         runGame.setCycleCount(Timeline.INDEFINITE);
@@ -60,11 +67,20 @@ public class GamePanel extends Pane {
                 }
             }
         }
-        tetromino.paint(this);
+        tetromino.paint(this, currentBlockImage);
+    }
+
+    private void getRandomTetromino() {
+        Random random = new Random();
+        int randTetromino = random.nextInt(tetrominos.size());
+        currentTetromino = tetrominos.get(randTetromino);
+        currentBlockImage = blockImages.get(randTetromino);
     }
 
     private void setBlockData(Rectangle rectangle) {
         Image image = new Image("file:images/greenBlock.png");
+        rectangle.setArcHeight(5);
+        rectangle.setArcWidth(5);
         rectangle.setFill(new ImagePattern(image));
     }
 
@@ -73,25 +89,28 @@ public class GamePanel extends Pane {
     }
 
     public void listener(Pane pane) {
+        Properties prop = new Properties();
+        try {
+            InputStream input = new FileInputStream("UserSettings");
+            prop.load(input);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         pane.setOnKeyPressed(event -> {
-            switch (event.getCode()) {
-                case UP:
-                    currentTetromino = MatrixOperations.rotate(currentTetromino);
-                    tetromino.rotate(currentTetromino);
-                    repaint();
-                    paintComponent();
-                    break;
-                case DOWN:
-                    break;
-                case LEFT:
-                    tetromino.stepLeft(glass, event.getCode());
-                    break;
-                case RIGHT:
-                    tetromino.stepRight(glass, event.getCode());
-                    break;
+            if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("upKey")))) {
+                currentTetromino = MatrixOperations.rotate(currentTetromino);
+                tetromino.rotate(currentTetromino);
+                repaint();
+                paintComponent();
+
+            } else if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("leftKey")))) {
+                tetromino.stepLeft(glass, event.getCode());
+
+            } else if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("rightKey")))) {
+                tetromino.stepRight(glass, event.getCode());
             }
         });
-    }
+}
 
     public void pause() {
         runGame.stop();

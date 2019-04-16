@@ -1,5 +1,6 @@
 package sample.tetris;
 
+import javafx.scene.image.Image;
 import java.util.*;
 
 public class Tetrominos extends Shape {
@@ -15,6 +16,7 @@ public class Tetrominos extends Shape {
             {0, 1, 1}};
     private int[][] SquareShape = {{1, 1},
             {1, 1}};
+    private int[][] LineShape = {{1, 1, 1, 1}};
 
     ArrayList<int[][]> setTetrominos() {
         ArrayList<int[][]> arrayList = new ArrayList<>();
@@ -24,13 +26,19 @@ public class Tetrominos extends Shape {
         arrayList.add(SShape);
         arrayList.add(ZShape);
         arrayList.add(SquareShape);
+        arrayList.add(LineShape);
         return arrayList;
     }
 
-
-
-    int[][] getRandomElement(ArrayList<int[][]> list) {
-        Random rand = new Random();
-        return list.get(rand.nextInt(list.size()));
+    ArrayList<Image> setBlockImages() {
+        ArrayList<Image> arrayList = new ArrayList<>();
+        arrayList.add(new Image("file:images/greenBlock.png"));
+        arrayList.add(new Image("file:images/blackBlock.png"));
+        arrayList.add(new Image("file:images/blueBlock.png"));
+        arrayList.add(new Image("file:images/fioletBlock.png"));
+        arrayList.add(new Image("file:images/orangeBlock.png"));
+        arrayList.add(new Image("file:images/redBlock.png"));
+        arrayList.add(new Image("file:images/redBlock.png"));
+        return arrayList;
     }
 }

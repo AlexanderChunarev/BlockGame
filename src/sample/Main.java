@@ -11,9 +11,8 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        VBox root = new MenuWindow();
         primaryStage.setTitle("Block game");
-        primaryStage.setScene(new Scene(root, 400, 450));
+        primaryStage.setScene(new Scene(new MenuWindow(), 390, 450));
         primaryStage.setResizable(false);
         SceneLibrary.setPrimaryScene(primaryStage);
         primaryStage.show();

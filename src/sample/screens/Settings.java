@@ -17,7 +17,7 @@ public class Settings extends GridPane implements InitializeScene {
     private Label[] labels = new Label[]{
             new Label("Left:"),
             new Label("Right:"),
-            new Label("Down:")};
+            new Label("Rotate:")};
     private TextField[] textFields = new TextField[]{
             new TextField(),
             new TextField(),
@@ -80,7 +80,7 @@ public class Settings extends GridPane implements InitializeScene {
                 props.setProperty("rightKey", textFields[1].getText());
             }
             if (textFields[2].getText() != null) {
-                props.setProperty("downKey", textFields[2].getText());
+                props.setProperty("upKey", textFields[2].getText());
             }
             props.store(out, "User settings");
         } catch (IOException e) {
@@ -96,7 +96,7 @@ public class Settings extends GridPane implements InitializeScene {
             prop.load(input);
             textFields[0].setText(prop.getProperty("leftKey"));
             textFields[1].setText(prop.getProperty("rightKey"));
-            textFields[2].setText(prop.getProperty("downKey"));
+            textFields[2].setText(prop.getProperty("upKey"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }
