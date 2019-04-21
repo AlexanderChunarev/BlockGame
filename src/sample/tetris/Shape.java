@@ -15,27 +15,28 @@ public class Shape {
 
     void stepDown() {
         for (Rectangle rectangle : figure) {
-            rectangle.setY(rectangle.getY() + BLOCK_SIZE / 2.0);
+            rectangle.setY(rectangle.getY() + BLOCK_SIZE);
         }
     }
 
-    void stepLeft(int[][] glass, KeyCode keyCode) {
-        if (!isTouchWall(glass, keyCode)) {
-            for (Rectangle rectangle : figure) {
-                rectangle.setX(rectangle.getX() - BLOCK_SIZE);
-            }
+    void stepLeft() {
+        for (Rectangle rectangle : figure) {
+            rectangle.setX(rectangle.getX() - BLOCK_SIZE);
+        }
+
+    }
+
+    void stepRight() {
+        for (Rectangle rectangle : figure) {
+            rectangle.setX(rectangle.getX() + BLOCK_SIZE);
         }
     }
 
-    void stepRight(int[][] glass, KeyCode keyCode) {
-        if (!isTouchWall(glass, keyCode)) {
-            for (Rectangle rectangle : figure) {
-                rectangle.setX(rectangle.getX() + BLOCK_SIZE);
-            }
-        }
+    void drop() {
+        stepDown();
     }
 
-    void rotate(int[][] currentTetromino) {
+    void getRotatedTetromino(int[][] currentTetromino) {
         if (currentTetromino.length == 3) {
             this.x = (int) figure.get(0).getX() - BLOCK_SIZE;
         } else {
@@ -56,14 +57,14 @@ public class Shape {
         }
     }
 
-    private boolean isTouchWall(int[][] glass, KeyCode keyCode) {
+    boolean isTouchWall(Rectangle[][] glass, String keyName) {
         for (Rectangle rectangle : figure) {
-            if (keyCode.equals(KeyCode.LEFT) && (rectangle.getX() == 0
-                    || glass[(int) (rectangle.getY() / BLOCK_SIZE)][(int) (rectangle.getX() / BLOCK_SIZE) - 1] == 1)) {
+            if (keyName.equals("LEFT") && (rectangle.getX() == 0
+                    || glass[(int) (rectangle.getY() / BLOCK_SIZE)][(int) (rectangle.getX() / BLOCK_SIZE) - 1] != null)) {
                 return true;
             }
-            if (keyCode.equals(KeyCode.RIGHT) && (rectangle.getX() == 270
-                    || glass[(int) (rectangle.getY() / BLOCK_SIZE)][(int) (rectangle.getX() / BLOCK_SIZE) + 1] == 1)) {
+            if (keyName.equals("RIGHT") && (rectangle.getX() == 270
+                    || glass[(int) (rectangle.getY() / BLOCK_SIZE)][(int) (rectangle.getX() / BLOCK_SIZE) + 1] != null)) {
                 return true;
             }
 
@@ -71,18 +72,19 @@ public class Shape {
         return false;
     }
 
-    boolean isTouchFloor(int[][] glass) {
+    boolean isTouchFloor(Rectangle[][] glass) {
         for (Rectangle rectangle : figure) {
-            if (glass[(int) rectangle.getY() / BLOCK_SIZE + 1][(int) rectangle.getX() / BLOCK_SIZE] > 0) {
+            if (rectangle.getY() / BLOCK_SIZE == glass.length - 1
+                    || glass[(int) rectangle.getY() / BLOCK_SIZE][(int) rectangle.getX() / BLOCK_SIZE] != null) {
                 return true;
             }
         }
         return false;
     }
 
-    void leaveOnTheFloor(int[][] glass) {
+    void leaveOnTheFloor(Rectangle[][] glass) {
         for (Rectangle rectangle : figure) {
-            glass[(int) rectangle.getY() / BLOCK_SIZE][(int) rectangle.getX() / BLOCK_SIZE] = 1;
+            glass[(int) rectangle.getY() / BLOCK_SIZE - 1][(int) rectangle.getX() / BLOCK_SIZE] = rectangle;
         }
     }
 

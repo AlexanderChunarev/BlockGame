@@ -5,7 +5,6 @@ import javafx.animation.Timeline;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import sample.matrix.MatrixOperations;
@@ -21,33 +20,22 @@ public class GamePanel extends Pane {
     private Image currentBlockImage;
     private ArrayList<int[][]> tetrominos = new Tetrominos().setTetrominos();
     private ArrayList<Image> blockImages = new Tetrominos().setBlockImages();
-    private int[][] glass = new int[AMOUNT_OF_BLOCKS + 1][10];
+    private Rectangle[][] glass = new Rectangle[AMOUNT_OF_BLOCKS][10];
 
     public GamePanel() {
         setFocusTraversable(true);
-        Arrays.fill(glass[AMOUNT_OF_BLOCKS], 1);
-        for (int i = 0; i < glass.length; i++) {
-            for (int j = 0; j < glass[0].length; j++) {
-                System.out.print(glass[i][j]);
-            }
-            System.out.println();
-        }
     }
 
     public void run() {
-        getRandomTetromino();
-        tetromino.initializeShape(currentTetromino);
-        tetromino.paint(this, currentBlockImage);
-        runGame = new Timeline(new KeyFrame(Duration.millis(200), event -> {
+        prepareTetromino();
+        runGame = new Timeline(new KeyFrame(Duration.millis(400), event -> {
             if (tetromino.isTouchFloor(glass)) {
                 tetromino.leaveOnTheFloor(glass);
                 tetromino = new Tetrominos();
-                getRandomTetromino();
-                tetromino.initializeShape(currentTetromino);
-                tetromino.paint(this, currentBlockImage);
+                prepareTetromino();
             }
-            if (MatrixOperations.isRowFilled(glass, 10)) {
-                MatrixOperations.isFilledRow(glass, 10);
+            if (isFilled()) {
+                removeFilledRow();
                 repaint();
                 paintComponent();
             }
@@ -60,10 +48,8 @@ public class GamePanel extends Pane {
     private void paintComponent() {
         for (int x = 0; x < glass.length - 1; x++) {
             for (int y = 0; y < glass[0].length; y++) {
-                if (glass[x][y] == 1) {
-                    Rectangle rectangle = new Rectangle(30 * y, 30 * x, 28, 28);
-                    setBlockData(rectangle);
-                    this.getChildren().add(rectangle);
+                if (glass[x][y] != null) {
+                    this.getChildren().add(glass[x][y]);
                 }
             }
         }
@@ -77,11 +63,42 @@ public class GamePanel extends Pane {
         currentBlockImage = blockImages.get(randTetromino);
     }
 
-    private void setBlockData(Rectangle rectangle) {
-        Image image = new Image("file:images/greenBlock.png");
-        rectangle.setArcHeight(5);
-        rectangle.setArcWidth(5);
-        rectangle.setFill(new ImagePattern(image));
+    private void prepareTetromino() {
+        getRandomTetromino();
+        tetromino.initializeShape(currentTetromino);
+        tetromino.paint(this, currentBlockImage);
+    }
+
+    private boolean isFilled() {
+        //int count;
+        for (int i = 0; i < glass.length; i++) {
+            int count = MatrixOperations.getCount(glass, i);
+            if (count == glass[0].length) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void removeFilledRow() {
+        for (int i = 0; i < glass.length; i++) {
+            int count = MatrixOperations.getCount(glass, i);
+            if (count == glass[0].length) {
+                moveDown(i);
+            }
+        }
+    }
+
+    private void moveDown(int pos) {
+        for (int i = pos; i > 0; i--) {
+            for (int j = 0; j < glass[0].length; j++) {
+                glass[i][j] = glass[i - 1][j];
+                if (glass[i][j] != null) {
+                    glass[i][j].setY(glass[i][j].getY() + 30);
+                }
+
+            }
+        }
     }
 
     private void repaint() {
@@ -97,22 +114,33 @@ public class GamePanel extends Pane {
             e.printStackTrace();
         }
         pane.setOnKeyPressed(event -> {
-            if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("upKey")))) {
+            if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("rotateKey")))) {
                 currentTetromino = MatrixOperations.rotate(currentTetromino);
-                tetromino.rotate(currentTetromino);
+                tetromino.getRotatedTetromino(currentTetromino);
                 repaint();
                 paintComponent();
 
-            } else if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("leftKey")))) {
-                tetromino.stepLeft(glass, event.getCode());
+            }
+            if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("leftKey")))) {
+                if (!tetromino.isTouchWall(glass, "LEFT")) {
+                    tetromino.stepLeft();
+                }
 
-            } else if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("rightKey")))) {
-                tetromino.stepRight(glass, event.getCode());
+            }
+            if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("rightKey")))) {
+                if (!tetromino.isTouchWall(glass, "RIGHT")) {
+                    tetromino.stepRight();
+                }
+            }
+            if (event.getCode().equals(KeyCode.valueOf(prop.getProperty("dropKey")))) {
+                while (!tetromino.isTouchFloor(glass)) {
+                    tetromino.drop();
+                }
             }
         });
-}
+    }
 
     public void pause() {
-        runGame.stop();
+        //runGame.stop();
     }
 }

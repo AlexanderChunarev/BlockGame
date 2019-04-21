@@ -17,8 +17,10 @@ public class Settings extends GridPane implements InitializeScene {
     private Label[] labels = new Label[]{
             new Label("Left:"),
             new Label("Right:"),
-            new Label("Rotate:")};
+            new Label("Rotate:"),
+            new Label(("Drop:"))};
     private TextField[] textFields = new TextField[]{
+            new TextField(),
             new TextField(),
             new TextField(),
             new TextField()};
@@ -27,18 +29,16 @@ public class Settings extends GridPane implements InitializeScene {
         fillPanel();
         loadSettings();
         listener();
-        System.out.println("Settings is started");
     }
 
     @Override
     public void fillPanel() {
-
         setProperties();
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             add(labels[i], 0, i + 1);
             add(textFields[i], 1, i + 1);
         }
-        add(backToMEnu, 1, 4);
+        add(backToMEnu, 1, 5);
     }
 
     @Override
@@ -59,12 +59,14 @@ public class Settings extends GridPane implements InitializeScene {
 
     @Override
     public void listener() {
-        backToMEnu.setOnAction(event -> SceneLibrary.switchMenu());
+        backToMEnu.setOnAction(event -> {
+            setUserSettings();
+            SceneLibrary.switchMenu();
+        });
         for (int i = 0; i < textFields.length; i++) {
             int index = i;
             textFields[i].setOnKeyReleased(event -> {
                 textFields[index].setText(String.valueOf(event.getCode()));
-                setUserSettings();
             });
         }
     }
@@ -80,7 +82,10 @@ public class Settings extends GridPane implements InitializeScene {
                 props.setProperty("rightKey", textFields[1].getText());
             }
             if (textFields[2].getText() != null) {
-                props.setProperty("upKey", textFields[2].getText());
+                props.setProperty("rotateKey", textFields[2].getText());
+            }
+            if (textFields[3].getText() != null) {
+                props.setProperty("dropKey", textFields[3].getText());
             }
             props.store(out, "User settings");
         } catch (IOException e) {
@@ -96,7 +101,8 @@ public class Settings extends GridPane implements InitializeScene {
             prop.load(input);
             textFields[0].setText(prop.getProperty("leftKey"));
             textFields[1].setText(prop.getProperty("rightKey"));
-            textFields[2].setText(prop.getProperty("upKey"));
+            textFields[2].setText(prop.getProperty("rotateKey"));
+            textFields[3].setText(prop.getProperty("dropKey"));
         } catch (IOException ex) {
             ex.printStackTrace();
         }

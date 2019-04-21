@@ -46,15 +46,20 @@ public class GameGrid extends BorderPane implements InitializeScene {
 
     private void createGamePanel() {
         gamePanel.setPrefSize(298, 420);
-        gamePanel.setStyle("-fx-background-color: rgba(0, 100, 100, 0.3); -fx-background-radius: 5;");
-        gamePanel.listener(this);
+        gamePanel.setStyle("-fx-background-color: rgba(0, 100, 100, 0.2); -fx-background-radius: 5;");
         setLeft(gamePanel);
     }
 
     @Override
     public void listener() {
-        back.setOnMouseClicked(event -> SceneLibrary.switchMenu());
-        play.setOnMouseClicked(event -> gamePanel.run());
+        back.setOnMouseClicked(event -> {
+            SceneLibrary.switchMenu();
+            gamePanel.pause();
+        });
+        play.setOnMouseClicked(event -> {
+            gamePanel.run();
+            gamePanel.listener(this);
+        });
         pause.setOnMouseClicked(event -> gamePanel.pause());
     }
 

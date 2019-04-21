@@ -1,5 +1,6 @@
 #User settings
-#Mon Apr 15 21:10:46 EEST 2019
+#Sat Apr 20 23:36:30 EEST 2019
+rotateKey=UP
 rightKey=RIGHT
-upKey=UP
+dropKey=DOWN
 leftKey=LEFT

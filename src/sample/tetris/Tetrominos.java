@@ -33,7 +33,7 @@ public class Tetrominos extends Shape {
     ArrayList<Image> setBlockImages() {
         ArrayList<Image> arrayList = new ArrayList<>();
         arrayList.add(new Image("file:images/greenBlock.png"));
-        arrayList.add(new Image("file:images/blackBlock.png"));
+        arrayList.add(new Image("file:images/greenBlock.png"));
         arrayList.add(new Image("file:images/blueBlock.png"));
         arrayList.add(new Image("file:images/fioletBlock.png"));
         arrayList.add(new Image("file:images/orangeBlock.png"));
